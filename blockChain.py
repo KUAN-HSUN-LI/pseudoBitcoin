@@ -108,14 +108,14 @@ class BlockChain():
             block = pickle.loads(encoded_block)
             cur_tip = block.prev_block_hash
             cur_height = block.height
-            if height:
+            if height is not None:
                 if cur_height == height:
                     yield block
                     return
                 elif cur_height < height:
                     raise IndexError(height)
                 else:
-                    pass
+                    continue
             yield block
 
     # ???

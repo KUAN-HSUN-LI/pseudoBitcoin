@@ -8,25 +8,14 @@ from transaction import UTXOTx, CoinbaseTx
 import utils
 
 
-@click.group()
-@click.pass_context
-def cli(ctx):
+@click.group(context_settings=dict(help_option_names=["-h", "--help"]))
+def cli():
     pass
-    # print(ctx.obj['bc'])
 
 
 @cli.command()
-@click.option("--transaction", "-t", required=True, type=str)
-@click.pass_context
-def addblock(ctx, transaction):
-    bc = ctx.obj['bc']
-    bc.add_block(transaction)
-
-
-@cli.command()
-@click.pass_context
-def printchain(ctx):
-    bc = ctx.obj['bc']
+def printchain():
+    bc = BlockChain()
     for block in bc.blocks():
         print(f"Height: {block.height}")
         print("Prev. hash: {0}".format(block.prev_block_hash))
@@ -38,9 +27,8 @@ def printchain(ctx):
 
 @cli.command()
 @click.option("--height", "-h", required=True, type=int)
-@click.pass_context
-def printblock(ctx, height):
-    bc = ctx.obj['bc']
+def printblock(height):
+    bc = BlockChain()
     try:
         for block in bc.blocks(height):
             print(f"Height: {block.height}")
@@ -77,7 +65,7 @@ def createblockchain(address):
 @cli.command()
 @click.option("--from_addr", "-from", required=True, type=str)
 @click.option("--to_addr", "-to", required=True, type=str)
-@click.option("--amount", required=True, type=int)
+@click.option("--amount", "-a", required=True, type=int)
 def send(from_addr, to_addr, amount):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
@@ -95,7 +83,7 @@ def getbalance(address):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
 
-    utxo_set.print_utxo()
+    # utxo_set.print_utxo()
 
     pubkey_hash = utils.address_to_pubkey_hash(address)
     utxos = utxo_set.find_utxo(pubkey_hash)
@@ -108,6 +96,5 @@ def getbalance(address):
 
 
 if __name__ == "__main__":
-    bc = BlockChain()
-    cli(obj={'bc': bc})
+    cli()
     # test()

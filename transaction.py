@@ -115,6 +115,9 @@ class CoinbaseTx(Transaction):
     def vout(self):
         return self._tx.vout
 
+    def to_bytes(self):
+        return utils.serialize(self)
+
 
 class UTXOTx(Transaction):
     def __init__(self, from_addr, to_addr, amount, utxo_set):
@@ -162,3 +165,6 @@ class UTXOTx(Transaction):
 
     def verify(self, prev_tx):
         return self._tx.verify(prev_tx)
+
+    def to_bytes(self):
+        return utils.serialize(self)

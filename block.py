@@ -2,7 +2,8 @@ import time
 import utils
 from pow import PoW
 import pickle
-
+from merkle_tree import MerkleTree
+import binascii
 
 class Block():
     def __init__(self, tx_lst, height, prev_block_hash='', bits=16):
@@ -21,11 +22,13 @@ class Block():
         return self
 
     def hash_transactions(self):
-        tx_hashs = []
+        tx_byte_lst = []
         for tx in self._tx_lst:
-            tx_hashs.append(tx.id)
+            tx_byte_lst.append(tx.to_bytes())
 
-        return utils.sum256_hex(utils.encode(''.join(tx_hashs)))
+        m_tree = MerkleTree(tx_byte_lst)
+
+        return utils.decode(binascii.hexlify(m_tree.root_hash))
 
     def serialize(self):
         # serializes the block

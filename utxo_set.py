@@ -63,7 +63,7 @@ class UTXOSet():
         for _, outs in self._bucket.kv.items():
             outs = utils.deserialize(outs)
             for out in outs:
-                print(out)
+                print(out.value)
 
     def find_utxo(self, pubkey_hash):
         utxos = []

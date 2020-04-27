@@ -26,6 +26,13 @@ def sum256_hex(*args):
     return m.hexdigest()
 
 
+def sum256_byte(*args):
+    m = hashlib.sha256()
+    for arg in args:
+        m.update(arg)
+    return m.digest()
+
+
 def privatekey_to_publickey(key):
     sk = ecdsa.SigningKey.from_string(key, ecdsa.SECP256k1)
     vk = sk.get_verifying_key()
