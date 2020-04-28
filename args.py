@@ -94,7 +94,7 @@ def getbalance(address):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
 
-    utxo_set.print_utxo()
+    # utxo_set.print_utxo()
 
     pubkey_hash = utils.address_to_pubkey_hash(address)
     utxos = utxo_set.find_utxo(pubkey_hash)
