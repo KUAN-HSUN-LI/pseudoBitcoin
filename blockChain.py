@@ -15,7 +15,6 @@ class BlockChain():
 
     def __init__(self, address=None):
         self._bucket = Bucket(BlockChain.db_file, BlockChain.block_bucket)
-        self._db = DB(BlockChain.db_file)
 
         try:
             self._tip = self._bucket.get('l')
@@ -32,7 +31,7 @@ class BlockChain():
         self._bucket.put('l', block.hash)
         self._bucket.put('height', block.height)
         self._tip = block.hash
-        self._bucket.commit()
+        self._bucket.save()
 
     def MineBlock(self, tx_lst):
         last_hash = self._bucket.get('l')
@@ -88,17 +87,6 @@ class BlockChain():
 
         return utxo
 
-    def add_block(self, data):
-        last_hash = decode(self._db.get(BlockChain.latest))
-        new_height = int(self._db.get(BlockChain.latest_height)) + 1
-        new_block = Block(data, new_height, prev_block_hash=last_hash).proof_of_block()
-
-        self._db.put(new_block.hash, pickle.dumps(new_block))
-        self._db.put(BlockChain.latest_height, new_block.height)
-        self._db.put(BlockChain.latest, new_block.hash)
-        self._tip = new_block.hash
-
-    # @property
     def blocks(self, height=None):
         cur_tip = self._tip
         while True:
@@ -118,7 +106,6 @@ class BlockChain():
                     continue
             yield block
 
-    # ???
     def find_transaction(self, ID):
         for block in self.blocks():
             for tx in block.transactions:
@@ -127,7 +114,6 @@ class BlockChain():
 
         return None
 
-    # ???
     def sign_transaction(self, tx, priv_key):
         prev_txs = {}
         for vin in tx.vin:
@@ -136,7 +122,6 @@ class BlockChain():
 
         tx.sign(priv_key, prev_txs)
 
-    # ???
     def verify_transaction(self, tx):
         if isinstance(tx, CoinbaseTx):
             return True

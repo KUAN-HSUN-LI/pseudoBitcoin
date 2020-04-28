@@ -5,6 +5,7 @@ import pickle
 from merkle_tree import MerkleTree
 import binascii
 
+
 class Block():
     def __init__(self, tx_lst, height, prev_block_hash='', bits=16):
         self._time = utils.encode(str(int(time.time())))
@@ -31,7 +32,6 @@ class Block():
         return utils.decode(binascii.hexlify(m_tree.root_hash))
 
     def serialize(self):
-        # serializes the block
         return pickle.dumps(self)
 
     def deserialize(self, data):

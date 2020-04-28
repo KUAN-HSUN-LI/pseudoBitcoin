@@ -12,8 +12,6 @@ class PoW():
         self._target = 1 << (256 - block.bits)
 
     def _prepare_data(self, nonce):
-        # import pdb
-        # pdb.set_trace()
         data_lst = [self._block.prev_block_hash,
                     self._block.hash_transactions(),
                     self._block.time,
@@ -36,8 +34,6 @@ class PoW():
         while nonce < self.max_nonce:
             data = self._prepare_data(nonce)
             hash_hex = utils.sum256_hex(data)
-            # sys.stdout("%s \r" % (hash_hex))
-            # sys.stdout.flush()
             hash_int = int(hash_hex, 16)
             if hash_int < self._target:
                 break

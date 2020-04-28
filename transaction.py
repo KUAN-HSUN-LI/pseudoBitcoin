@@ -6,6 +6,8 @@ import utils
 from transaction_output import TXOuput
 from transaction_input import TXInput
 import ecdsa
+import string
+import random
 
 
 class Transaction():
@@ -50,11 +52,6 @@ class Transaction():
         return Transaction(self.id, inputs, outputs)
 
     def sign(self, private_key, prev_txs):
-        # for vin in self.vin:
-        #     if not prev_txs[vin.tx_id].ID:
-        #         # log.error("Previous transaction is not correct")
-        #         print("Previous transaction is not correct")
-
         tx_copy = self._trimmed_copy()
 
         for in_id, vin in enumerate(tx_copy.vin):
@@ -70,10 +67,6 @@ class Transaction():
             self.vin[in_id].signature = sig
 
     def verify(self, prev_txs):
-        # for vin in self.vin:
-        #     if not prev_txs[vin.tx_id].ID:
-        #         # log.error("Previous transaction is not correct")
-        #         print("Previous transaction is not correct")
         tx_copy = self._trimmed_copy()
 
         for in_id, vin in enumerate(self.vin):
@@ -83,8 +76,6 @@ class Transaction():
             tx_copy.vin[in_id].public_key = None
 
             sig = self.vin[in_id].signature
-            # vk = ecdsa.VerifyingKey.from_string(
-            #     vin.public_key[2:], curve=ecdsa.SECP256k1)
             vk = utils.pubkey_to_verifykey(vin.public_key)
             if not vk.verify(sig, utils.encode(tx_copy.id)):
                 return False
@@ -95,7 +86,8 @@ class Transaction():
 class CoinbaseTx(Transaction):
     def __init__(self, to, data=None):
         if not data:
-            data = f"Reward to {to}"
+            data = ''.join(random.choice(
+                string.ascii_uppercase + string.digits) for _ in range(20))
 
         txid = None
         vin = [TXInput('', -1, None, data)]

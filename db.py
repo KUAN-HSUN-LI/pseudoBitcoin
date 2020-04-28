@@ -28,7 +28,7 @@ class DB():
         self.kv[bucket] = {}
 
 
-class Bucket(object):
+class Bucket():
 
     def __init__(self, db_file, bucket):
         self._db = DB(db_file)
@@ -46,7 +46,7 @@ class Bucket(object):
     def delete(self, key):
         self._db.delete(self._bucket, key)
 
-    def commit(self):
+    def save(self):
         self._db.save()
 
     @property

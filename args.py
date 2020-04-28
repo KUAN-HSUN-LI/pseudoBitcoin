@@ -6,6 +6,7 @@ from wallets import Wallets
 from utxo_set import UTXOSet
 from transaction import UTXOTx, CoinbaseTx
 import utils
+import sys
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
@@ -29,6 +30,9 @@ def printchain():
 @click.option("--height", "-h", required=True, type=int)
 def printblock(height):
     bc = BlockChain()
+    if height < 0:
+        print(f"Block height must >= 0, but get height {height}")
+        sys.exit()
     try:
         for block in bc.blocks(height):
             print(f"Height: {block.height}")
@@ -50,6 +54,13 @@ def createwallet():
     wallets.save()
 
     print("Your new address: {}".format(address))
+
+
+@cli.command()
+def getwallets():
+    wallets = Wallets()
+    for idx, addr in enumerate(wallets.get_addresses()):
+        print(f"address{idx}: {addr}")
 
 
 @cli.command()
@@ -83,7 +94,7 @@ def getbalance(address):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
 
-    # utxo_set.print_utxo()
+    utxo_set.print_utxo()
 
     pubkey_hash = utils.address_to_pubkey_hash(address)
     utxos = utxo_set.find_utxo(pubkey_hash)
@@ -97,4 +108,3 @@ def getbalance(address):
 
 if __name__ == "__main__":
     cli()
-    # test()

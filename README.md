@@ -9,7 +9,7 @@ pip install -r requirements.txt
 ```
 python3 args.py createwallet
 python3 args.py createblockchain -a [address]
-python3 args.py createwallet
+python3 args.py getwallets
 python3 args.py send -from [address] -to [address] -a [amount]
 python3 args.py getbalance -a [address]
 python3 args.py printchain

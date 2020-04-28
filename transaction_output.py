@@ -9,10 +9,6 @@ class TXOuput():
         self._address = address
         self._public_key_hash = utils.address_to_pubkey_hash(address)
 
-    # def unlock_output(self, unlocking):
-    #     # ???
-    #     return self._pubkey == unlocking
-
     def is_locked_with_key(self, pubkey_hash):
         return self._public_key_hash == pubkey_hash
 

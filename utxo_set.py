@@ -18,7 +18,7 @@ class UTXOSet():
 
         for txid, outs in utxos.items():
             self._bucket.put(txid, utils.serialize(outs))
-        self._bucket.commit()
+        self._bucket.save()
 
     def find_spendable_outputs(self, pubkey_hash, amount):
         account_amount = 0
@@ -51,11 +51,12 @@ class UTXOSet():
                     else:
                         self._bucket.put(
                             vin.txid, utils.serialize(update_outs))
+
             # Add new outputs
             new_outputs = [out for out in tx.vout]
             self._bucket.put(tx.id, utils.serialize(new_outputs))
 
-        self._bucket.commit()
+        self._bucket.save()
 
     def print_utxo(self):
         utxos = []
