@@ -1,19 +1,27 @@
 # Pseudo Bitcoin
 
 ### Installation
+* prerequisites
+    ```
+    click
+    ecdsa
+    click-shell
+    ```
 * Install the prerequisites
-```
-pip install -r requirements.txt
-```
+    ```
+    pip install -r requirements.txt
+    ```
 ### How to use
 ```
-python3 args.py createwallet
-python3 args.py createblockchain -a [address]
-python3 args.py getwallets
-python3 args.py send -from [address] -to [address] -a [amount]
-python3 args.py getbalance -a [address]
-python3 args.py printchain
-python3 args.py printblock -h [height]
+$ python3 args.py -n [name]
+cmd> createwallet
+cmd> createblockchain -a [address]
+cmd> createwallet
+cmd> getwallets
+cmd> send -from [address] -to [address] -a [amount]
+cmd> getbalance -a [address]
+cmd> printchain
+cmd> printblock -h [height]
 ```
 ### Todo
 - [x] Prototype

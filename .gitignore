@@ -1,6 +1,6 @@
 .vscode
 __pycache__
-blockchain.db
-utxo.db
-wallet.pkl
+*.db
+*.db
+*.pkl
 test.py

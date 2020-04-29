@@ -7,28 +7,33 @@ from utxo_set import UTXOSet
 from transaction import UTXOTx, CoinbaseTx
 import utils
 import sys
+from click_shell import shell
 
 
-@click.group(context_settings=dict(help_option_names=["-h", "--help"]))
-def cli():
-    pass
+@shell(prompt='cmd > ', intro='Starting pseudo bitcoin...', context_settings=dict(help_option_names=["-h", "--help"]))
+@click.option("--name", "-n", required=True, help="Enter client's name")
+@click.pass_context
+def cli(ctx, name):
+    ctx.obj['name'] = name
 
 
 @cli.command()
-def printchain():
+@click.pass_context
+def printchain(ctx):
     bc = BlockChain()
     for block in bc.blocks():
         print(f"Height: {block.height}")
-        print("Prev. hash: {0}".format(block.prev_block_hash))
-        print("Data: {0}".format(block.transactions))
-        print("Hash: {0}".format(block.hash))
+        print(f"Prev. hash: {block.prev_block_hash}")
+        print(f"Data: {block.transactions}")
+        print(f"Hash: {block.hash}")
         pow = PoW(block)
-        print("PoW: {0}\n".format(pow.validate()))
+        print(f"PoW: {pow.validate()}\n")
 
 
 @cli.command()
 @click.option("--height", "-h", required=True, type=int)
-def printblock(height):
+@click.pass_context
+def printblock(ctx, height):
     bc = BlockChain()
     if height < 0:
         print(f"Block height must >= 0, but get height {height}")
@@ -36,11 +41,11 @@ def printblock(height):
     try:
         for block in bc.blocks(height):
             print(f"Height: {block.height}")
-            print("Prev. hash: {0}".format(block.prev_block_hash))
-            print("Data: {0}".format(block.transactions))
-            print("Hash: {0}".format(block.hash))
+            print(f"Prev. hash: {block.prev_block_hash}")
+            print(f"Data: {block.transactions}")
+            print(f"Hash: {block.hash}")
             pow = PoW(block)
-            print("PoW: {0}\n".format(pow.validate()))
+            print(f"PoW: {pow.validate()}\n")
     except Exception as e:
         print(f"Cannot found block height: {e}")
 
@@ -53,7 +58,7 @@ def createwallet():
     wallets.add_wallet(address, wallet)
     wallets.save()
 
-    print("Your new address: {}".format(address))
+    print(f"Your new address: {address}")
 
 
 @cli.command()
@@ -65,7 +70,8 @@ def getwallets():
 
 @cli.command()
 @click.option("--address", "-a", required=True, type=str)
-def createblockchain(address):
+@click.pass_context
+def createblockchain(ctx, address):
     bc = BlockChain(address)
     utxo_set = UTXOSet(bc)
     utxo_set.reindex()
@@ -77,7 +83,8 @@ def createblockchain(address):
 @click.option("--from_addr", "-from", required=True, type=str)
 @click.option("--to_addr", "-to", required=True, type=str)
 @click.option("--amount", "-a", required=True, type=int)
-def send(from_addr, to_addr, amount):
+@click.pass_context
+def send(ctx, from_addr, to_addr, amount):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
 
@@ -90,7 +97,8 @@ def send(from_addr, to_addr, amount):
 
 @cli.command()
 @click.option("--address", "-a", required=True, type=str)
-def getbalance(address):
+@click.pass_context
+def getbalance(ctx, address):
     bc = BlockChain()
     utxo_set = UTXOSet(bc)
 
@@ -107,4 +115,4 @@ def getbalance(address):
 
 
 if __name__ == "__main__":
-    cli()
+    cli(obj={})
